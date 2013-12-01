@@ -5,11 +5,13 @@ A generic API for creating Plug.dj bots
 
 
 ## How to use
-Just grab it from npm, or optionally use the lastest version for github
+~~Just grab it from npm, or optionally use the lastest version for github~~
 
 ```
 npm install plugapi
 ```
+
+Due to a Plug update, the original version of PlugAPI from npm no longer works. You will have to use this fork for now.
 
 To connect, do this!
 
@@ -17,15 +19,27 @@ To connect, do this!
 var AUTH = 'xxxxxxxxxxxxxxxxxxxxxxxxxxx=?_expires=xxxxxxxxxxxxxxxxxx==&user_id=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx='; // Put your auth token here, it's the cookie value for usr
 var ROOM = 'chillout-mixer-ambient-triphop;
 
-var bot = new PlugAPI(AUTH);
-bot.connect(ROOM); // Right now, you MUST specify the room here.
+// Instead of providing the AUTH, you can use this static method to get the AUTH cookie via twitter login credentials:
+PlugAPI.getAuth({
+	username: 'xxx',
+	password: 'xxx'
+}, function(err, auth) { // if err is defined, an error occurred, most likely incorrect login
+	if(err) {
+		console.log("An error occurred: " + err);
+		return;
+	}
+	var bot = new PlugAPI(auth);
+	bot.connect(ROOM); // Right now, you MUST specify the room here.
 
-bot.on('connected', function() {
-	bot.joinRoom(ROOM, function(data) {
-		// data object has information on the room - list of users, song currently playing, etc.
-		console.log("Joined " + ROOM + ": ", data);
+	bot.on('connected', function() {
+		bot.joinRoom(ROOM, function(data) {
+			// data object has information on the room - list of users, song currently playing, etc.
+			console.log("Joined " + ROOM + ": ", data);
+		});
 	});
-})
+});
+
+
 ```
 
 You can also pass the room directly to connect to save SO MUCH TIME
